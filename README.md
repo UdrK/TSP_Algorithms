@@ -1,2 +1,2 @@
 # TSP_Algorithms
-Traveling salesman problem algorithms in java
+Traveling salesman problem algorithms in python
