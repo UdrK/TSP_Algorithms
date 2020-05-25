@@ -1,10 +1,11 @@
 import math
+import time
 from union_find import UnionFind
 from heap import Heap
 
 class Algorithms:
 
-    def HK_VISIT(self, v, S):
+    def HK_VISIT(self, v, S, max_time):
         if S == frozenset({v}):
             return self.w[v][0]
         elif (v, S) in self.d:
@@ -17,10 +18,12 @@ class Algorithms:
             # without the algorithm encounters a memory error when executed on "ulysses22.tsp"
             subset = S - {v}
             for u in subset:
-                dist = self.HK_VISIT(u, subset)
+                dist = self.HK_VISIT(u, subset, max_time)
                 if dist + self.w[u][v] < mindist:
                     mindist = dist + self.w[u][v]
                     minprec = u
+                if time.time() - self.starting_time > max_time:
+                    break
 
             self.d[(v, S)] = mindist
             self.p[(v, S)] = minprec
@@ -98,11 +101,12 @@ class Algorithms:
             weight += graph.adjacency_matrix[circuit[i-1]][circuit[i]]
         return weight
 
-    def HK_TSP(self, graph):
+    def HK_TSP(self, graph, max_time):
         self.d = {}
         self.p = {}
         self.w = graph.adjacency_matrix
-        return self.HK_VISIT(0, frozenset(graph.vertices))
+        self.starting_time = time.time()
+        return self.HK_VISIT(0, frozenset(graph.vertices), max_time*60)     # turning minutes in seconds
 
     def nearest_neighbor_heuristic_TSP(self, graph):
         vertices = graph.vertices.copy()
