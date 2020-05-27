@@ -5,30 +5,6 @@ from heap import Heap
 
 class Algorithms:
 
-    def HK_VISIT(self, v, S, max_time):
-        if S == frozenset({v}):
-            return self.w[v][0]
-        elif (v, S) in self.d:
-            return self.d[(v, S)]
-        else:
-            mindist = math.inf
-            minprec = None
-
-            # this line makes the algorithm occupy less space in memory
-            # without the algorithm encounters a memory error when executed on "ulysses22.tsp"
-            subset = S - {v}
-            for u in subset:
-                dist = self.HK_VISIT(u, subset, max_time)
-                if dist + self.w[u][v] < mindist:
-                    mindist = dist + self.w[u][v]
-                    minprec = u
-                if time.time() - self.starting_time > max_time:
-                    break
-
-            self.d[(v, S)] = mindist
-            self.p[(v, S)] = minprec
-            return mindist
-
     def kruskal(self, graph):
         MST = []
         MST_weight = 0
@@ -87,9 +63,11 @@ class Algorithms:
                 added_in_current_row += 1
                 aux = 0
 
+            # backtracking
             if j == len(adjacency_matrix):
                 j = 0
                 if added_in_current_row == 0:
+                    # changes row to be examined, goes backwards in the list of visited (upwards in the tree)
                     i = visited[-2-aux]
                     aux += 1
 
@@ -101,11 +79,36 @@ class Algorithms:
             weight += graph.adjacency_matrix[circuit[i-1]][circuit[i]]
         return weight
 
+    def HK_VISIT(self, v, S, max_time):
+        if S == frozenset({v}): # frozenset is immutable set, needed to have hashable set
+            return self.w[v][0]
+        elif (v, S) in self.d:
+            return self.d[(v, S)]
+        else:
+            mindist = math.inf
+            minprec = None
+
+            subset = S - {v}
+            for u in subset:
+                dist = self.HK_VISIT(u, subset, max_time)
+                if dist + self.w[u][v] < mindist:
+                    mindist = dist + self.w[u][v]
+                    minprec = u
+                # interrupts execution when max_time has passed, algorithm exits for loop and returns
+                # mindist as calculated
+                if time.time() - self.starting_time > max_time:
+                    break
+
+            self.d[(v, S)] = mindist
+            self.p[(v, S)] = minprec
+            return mindist
+
     def HK_TSP(self, graph, max_time):
         self.d = {}
         self.p = {}
         self.w = graph.adjacency_matrix
-        self.starting_time = time.time()
+        self.starting_time = time.time()    # time measurement used later to stop execution
+        # frozenset is immutable set, needed to have hashable set
         return self.HK_VISIT(0, frozenset(graph.vertices), max_time*60)     # turning minutes in seconds
 
     def nearest_neighbor_heuristic_TSP(self, graph):
@@ -137,7 +140,6 @@ class Algorithms:
     def two_approx_TSP(self, graph):
         MST, MST_weight = self.kruskal(graph)
         MST_adjacency_matrix = self.edge_list_to_adjacency_matrix(MST, len(graph.vertices))
-        # since i'm not interested in the circuit itself, but in its weight, i only need the last vertex visited
         DFS_visit = self.adjacency_matrix_DFS(0, MST_adjacency_matrix)
         DFS_visit.append(0)
         TSP_weight = self.circuit_weight(graph, DFS_visit)
