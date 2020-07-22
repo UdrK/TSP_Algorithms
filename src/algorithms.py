@@ -111,7 +111,7 @@ class Algorithms:
         # frozenset is immutable set, needed to have hashable set
         return self.HK_VISIT(0, frozenset(graph.vertices), max_time*60)     # turning minutes in seconds
 
-    def nearest_neighbor_heuristic_TSP(self, graph):
+    def nearest_neighbor_heuristic_TSP(self, graph, g_name):
         vertices = graph.vertices.copy()
 
         last_inserted = 0

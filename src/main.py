@@ -4,11 +4,11 @@ from algorithms import Algorithms
 import os
 import time
 
-directory_name = 'tsp_dataset'
+directory_name = '../tsp_dataset'
 tot = len(os.listdir(directory_name))
 for file in os.listdir(directory_name):
     filename = os.fsdecode(file)
-    if filename.endswith(".tsp"):
+    if filename.endswith("52.tsp"):
         file_path = os.path.join(directory_name, filename)
         print("Processing: {}".format(file_path))
 
@@ -19,7 +19,7 @@ for file in os.listdir(directory_name):
         exact_res = alg.HK_TSP(gr, 1)
         ending = time.time()
 
-        heuristic_res = alg.nearest_neighbor_heuristic_TSP(gr)
+        heuristic_res = alg.nearest_neighbor_heuristic_TSP(gr, filename)
         ending2 = time.time()
 
         two_approx_res = alg.two_approx_TSP(gr)
