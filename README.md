@@ -3,7 +3,7 @@ As exercise for the advanced algorithms class i'm taking, i need to implement 3 
 
 The language i've choosen for this exercise is python, the decision is based on the fact that the exercise is thought for groups of 3 students but i've decided to do it on my own, and i prefer speed of development over performances.
 
-The graphs to be used for testing are in the tsp_dataset folder.
+The graphs to be used for testing are in the **tsp_dataset** folder.
 
 ## What is an Hamiltonian Cycle?
 
